@@ -2,11 +2,9 @@
 
 ## Why I made this
 
-My mom employs a driver. Every night, the driver sends a photo of the car parked, with the time, date, and location printed somewhere on the image. At the end of the month, all of those photos have to be reviewed to figure out how much overtime to pay him.
+My family employs a driver, and every night he sends a photo of the car parked after his shift. The timestamp is somewhere on the image, sometimes clear, sometimes not. At the end of the month, my mom has to go through all of them to figure out how much overtime he's owed. The rule is simple: after 6 PM, it's Rp 10,000 per hour. The problem is the process. She'd open each photo, zoom in, read the time, and keep a running total on paper. It took hours, and mistakes were easy to make when you're staring at tiny text on a phone screen.
 
-The rule is simple: if he gets home after 6 PM, he gets Rp 10,000 per hour of overtime. But doing it by hand meant zooming into each photo, reading the timestamp, and keeping a running total on paper. It took a long time, and it was easy to lose track or make a mistake.
-
-I built this program so the process can be done automatically from a folder of photos.
+I watched her do this for a few months. At some point it stopped being "my mom's monthly chore" and started looking like a problem I could actually solve with code. So I built this program. Point it at a folder of photos, and it handles the rest: reads the timestamps, applies the rules, and shows the total.
 
 ## What it does
 
@@ -34,9 +32,11 @@ The interface is built with Tkinter. Each kept photo gets its own tab with the i
 
 ## What I learned
 
-This was one of the first times I built something for a real person instead of just for a grade. That made me think differently about the code. It wasn't enough for it to work on my computer with my test images. It had to handle blurry photos, missing timestamps, duplicate files, and times that didn't fit the normal pattern.
+This was the first project where I was building for someone other than myself. That changed things. When I write code for school, it either works or it doesn't. When I write code for my mom, it has to work on the blurry photos, the ones where the timestamp is cut off at the edge, the ones where Tesseract reads a 5 as an S. Every bug I found wasn't just a bug. It was something that would make her life harder.
 
-I also learned that OCR is not perfect. A lot of the work was not in reading the text, but in making the image easier to read. And I learned that a small program can save someone a lot of time if it fits into their actual routine.
+The bigger surprise was how much of the work happened before the OCR even ran. Tesseract would fail on the raw photos more often than not, because the timestamp is printed in a thin font over a busy background. I ended up spending more time cropping, resizing, and thresholding the image than writing the payment logic. That was the part I didn't expect. Making the input readable turned out to be harder than calculating the output.
+
+I also had to think about who would actually use this. My mom doesn't want to open a terminal or read a log file. She wants to click a button and see a number. That constraint shaped the whole interface, and it's the part of the project I'm most proud of.
 
 ## Built with
 
