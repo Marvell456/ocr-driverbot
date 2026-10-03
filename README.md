@@ -1,10 +1,12 @@
 # Driver Payment Reviewer
 
+A Python desktop app that reads timestamps from photos and calculates overtime pay automatically.
+
 ## Why I made this
 
 My family employs a driver, and every night he sends a photo of the car parked after his shift. The timestamp is somewhere on the image, sometimes clear, sometimes not. At the end of the month, my mom has to go through all of them to figure out how much overtime he's owed. The rule is simple: after 6 PM, it's Rp 10,000 per hour. The problem is the process. She'd open each photo, zoom in, read the time, and keep a running total on paper. It took hours, and mistakes were easy to make when you're staring at tiny text on a phone screen.
 
-I watched her do this for a few months. At some point it stopped being "my mom's monthly chore" and started looking like a problem I could actually solve with code. So I built this program. Point it at a folder of photos, and it handles the rest: reads the timestamps, applies the rules, and shows the total.
+After watching her do this a few times, I realized I could automate most of it. So I built this program. Point it at a folder of photos, and it handles the rest: reads the timestamps, applies the rules, and shows the total.
 
 ## What it does
 
@@ -22,7 +24,7 @@ I watched her do this for a few months. At some point it stopped being "my mom's
 
 ## How it works
 
-The app uses Tesseract for OCR. Before reading the image, it preprocesses it — converts it to grayscale, increases contrast, thresholds it, and resizes it — then tries a few different crops of the image where the timestamp usually appears. It also tries multiple OCR settings to improve the chance of a clean read.
+The app uses Tesseract for OCR. Before reading the image, it preprocesses it: converts it to grayscale, increases contrast, thresholds it, and resizes it. Then it tries a few different crops of the image where the timestamp usually appears, along with multiple OCR settings, to improve the chance of a clean read.
 
 Once it has a timestamp, it applies the payment rules. If the timestamp falls in the invalid window, the file is ignored. If it's after midnight but before 4 AM, the shift date is moved back one day, and overtime is counted from 6 PM the previous day.
 
@@ -32,7 +34,7 @@ The interface is built with Tkinter. Each kept photo gets its own tab with the i
 
 ## What I learned
 
-This was the first project where I was building for someone other than myself. That changed things. When I write code for school, it either works or it doesn't. When I write code for my mom, it has to work on the blurry photos, the ones where the timestamp is cut off at the edge, the ones where Tesseract reads a 5 as an S. Every bug I found wasn't just a bug. It was something that would make her life harder.
+This was the first project where I was building for someone other than myself. That changed things. When I write code for school, it either works or it doesn't. When I write code for my mom, it has to work on the messy photos: the timestamp cut off at the edge, or a digit Tesseract reads wrong. Every bug I found had a real consequence, because it would make her life harder.
 
 The bigger surprise was how much of the work happened before the OCR even ran. Tesseract would fail on the raw photos more often than not, because the timestamp is printed in a thin font over a busy background. I ended up spending more time cropping, resizing, and thresholding the image than writing the payment logic. That was the part I didn't expect. Making the input readable turned out to be harder than calculating the output.
 
@@ -46,9 +48,24 @@ I also had to think about who would actually use this. My mom doesn't want to op
 - pytesseract and Tesseract for OCR
 - pandas and openpyxl for Excel export
 
-## Running it
+## Requirements
+
+- Python 3
+- Tesseract OCR installed
+- Python packages: Pillow, pytesseract, pandas, openpyxl
+
+## Usage
 
 1. Install Tesseract OCR and set the path to the executable in the script.
-2. Install the Python dependencies: Pillow, pytesseract, pandas, and openpyxl.
+2. Install the Python dependencies:
+   ```
+   pip install pillow pytesseract pandas openpyxl
+   ```
 3. Put your photos in a folder named `data`.
 4. Run the script.
+
+## Notes
+
+- Only `.png`, `.jpg`, and `.jpeg` files are scanned.
+- The cache is stored in `data/.ocr_cache.json`.
+- The overtime rate and time rules are defined at the top of the script and can be changed if needed.
